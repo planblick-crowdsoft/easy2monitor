@@ -1,0 +1,52 @@
+{
+  "rabbit_version": "3.6.11",
+  "users": [
+    {
+      "name": "admin",
+      "password": "admin",
+      "tags": "administrator"
+    }
+  ],
+  "vhosts": [],
+  "permissions": [
+    {
+      "user": "admin",
+      "vhost": "\/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "parameters": [],
+  "policies": [],
+  "exchanges": [
+    {
+      "name": "monitoring",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "monitoring",
+      "vhost": "/",
+      "durable": false,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "monitoring",
+      "vhost": "/",
+      "destination": "monitoring",
+      "destination_type": "queue",
+      "routing_key": "*",
+      "arguments": {}
+    }
+  ]
+}
