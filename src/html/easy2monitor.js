@@ -34,11 +34,16 @@ var update_data = function () {
 
 var set_status = function (data) {
     for (row in data) {
+         if (data[row]["uptime_percentage"]) {
+             data[row]["uptime_percentage"] = data[row]["uptime_percentage"].toFixed(10) + "%"
+         }
+
         if (data[row]["result"]) {
             data[row]["status"] = '<div class="led-green"></div>'
         } else {
             if (data[row]["last_successfull"] == null) {
                 data[row]["last_successfull"] = "Nie"
+
                 data[row]["status"] = '<div class="led-yellow"></div>'
             } else {
                 data[row]["status"] = '<div class="led-red"></div>'

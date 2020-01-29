@@ -1,6 +1,9 @@
 from flask import Flask, jsonify, Response
 from flask_cors import CORS, cross_origin
 from db.ping import DbPing
+from db.downtime import Downtime
+import json
+import datetime
 
 app = Flask(__name__)
 
@@ -10,6 +13,7 @@ app = Flask(__name__)
 @app.route('/data', methods=["GET"])
 @cross_origin()
 def data_action():
+    DbPing()
     pings = DbPing.session.query(DbPing).all()
     result = [r.as_dict() for r in pings]
 
@@ -24,12 +28,31 @@ def data_action():
 
     return Response(generate(), mimetype='text/json')
 
+@app.route('/downtimes', methods=["GET"])
+@cross_origin()
+def downtime_action():
+    Downtime()
+    pings = Downtime.session.query(Downtime).all()
+    result = [r.as_dict() for r in pings]
+
+    def generate():
+        prepend = ""
+        yield '[\n'
+        for downtime in Downtime.session.query(Downtime).order_by(Downtime.timestamp):
+            # ping.data["timestamp"] = ping.timestamp
+            dataset = {"name": downtime.name, "downtime": downtime.seconds, "date": datetime.datetime.strftime(downtime.timestamp, "%Y-%m-%d %H:%M:%S")}
+            yield prepend + json.dumps(dataset) + '\n'
+            prepend = ","
+        yield ']\n'
+
+    return Response(generate(), mimetype='text/json')
+
 
 @app.route('/test', methods=["GET"])
 @cross_origin()
 def test_action():
     import random
-    return "Random choice status", random.choice([200, 200, 200, 200, 400, 500])
+    return "Random choice status", random.choice([200, 400, 500])
 
 
 @app.route('/toggle_mailsend', methods=["GET"])

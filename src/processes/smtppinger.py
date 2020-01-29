@@ -2,6 +2,7 @@ from time import sleep
 import threading
 import requests
 from db.ping import DbPing
+from db.downtime import Downtime
 import json
 import hashlib
 import datetime
@@ -55,6 +56,17 @@ class SmtpPing:
                         check["last_successfull"] = str(datetime.datetime.now()).split(".", 1)[0]
                     else:
                         check["last_failure"] = str(datetime.datetime.now()).split(".", 1)[0]
+                        if check.get("checktime") and len(check.get("checktime")) > 0:
+                            last_checktime = datetime.datetime.strptime(check["checktime"], "%Y-%m-%d %H:%M:%S")
+                            now = datetime.datetime.now()
+                            seconds = round((now - last_checktime).total_seconds())
+                            time = Downtime()
+                            time.timestamp = now
+                            time.name = check["name"]
+                            time.name_hash = name_hash
+                            time.seconds = seconds
+                            time.save()
+                            check["downtime_seconds"] = int(check.get("downtime_seconds", 0)) + seconds
 
                     # test whether we have a switch from working to not working
                     if ping.data and json.loads(ping.data).get("result") is True and probe_result is False:
@@ -70,6 +82,18 @@ class SmtpPing:
 
                     # test whether we have a switch from non-working to working
                     if ping.data and json.loads(ping.data).get("result") is False and probe_result is True:
+                        if previous_successfull and len(previous_successfull) > 0:
+                            last_successfull = datetime.datetime.strptime(previous_successfull, "%Y-%m-%d %H:%M:%S")
+                            now = datetime.datetime.now()
+                            seconds = round((now - last_successfull).total_seconds())
+                            time = Downtime()
+                            time.timestamp = now
+                            time.name = check["name"]
+                            time.name_hash = name_hash
+                            time.seconds = seconds
+                            time.save()
+
+                            check["downtime_seconds"] = int(check.get("downtime_seconds", 0)) + seconds
                         msg = {
                             "type": "smtp_check_recovered",
                             "check_name": check["name"],
@@ -79,6 +103,13 @@ class SmtpPing:
                         queue_connector = client()
                         queue_connector.publish(toExchange="monitoring", routingKey="smtp_check_recovered",
                                                 message=json.dumps(msg))
+
+                    whole = 365 * 24 * 60 * 60
+
+                    downtime_seconds = check.get("downtime_seconds", 0)
+                    check["downtime_seconds"] = downtime_seconds
+                    check["downtime_percentage"] = 100 * float(downtime_seconds / float(whole))
+                    check["uptime_percentage"] = 100 - check["downtime_percentage"]
 
                     time = datetime.datetime.now()
                     check["result"] = probe_result

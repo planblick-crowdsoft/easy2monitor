@@ -13,15 +13,15 @@ from models.mq_handler import msg_handler
 if __name__ == '__main__':
     with open("./check_definitions/http_check_definitions.json", "r") as configfile:
         config = json.loads(configfile.read())
-    HttpPing(config=config, intervall=10)
+    HttpPing(config=config, intervall=5)
 
     with open("./check_definitions/smtp_check_definitions.json", "r") as configfile:
         config = json.loads(configfile.read())
-    SmtpPing(config=config, intervall=10)
+    SmtpPing(config=config, intervall=5)
 
     with open("./check_definitions/imap_check_definitions.json", "r") as configfile:
         config = json.loads(configfile.read())
-    ImapPing(config=config, intervall=10)
+    ImapPing(config=config, intervall=5)
 
     name = "monitoring"
     queue = "monitoring"
