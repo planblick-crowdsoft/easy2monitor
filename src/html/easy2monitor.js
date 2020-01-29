@@ -35,7 +35,7 @@ var update_data = function () {
 var set_status = function (data) {
     for (row in data) {
          if (data[row]["uptime_percentage"]) {
-             data[row]["uptime_percentage"] = data[row]["uptime_percentage"].toFixed(10) + "%"
+             data[row]["uptime_percentage"] = (Math.floor(data[row]["uptime_percentage"] * 1000) / 1000).toFixed(3) + "%"
          }
 
         if (data[row]["result"]) {
