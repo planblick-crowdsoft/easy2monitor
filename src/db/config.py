@@ -13,8 +13,8 @@ class Config:
     db_port = str(os.getenv("DB_PORT"))
     db_name = str(os.getenv("DB_NAME"))
     db_debug = os.getenv("DB_DEBUG") if os.getenv("DB_DEBUG") is not None else False
-    if db_driver == "sqlite":
-        db_url = db_driver + ':////src/' + db_name + ".sqlite"
+    if "sqlite" in db_driver:
+        db_url = 'sqlite:///./' + db_name + ".sqlite"
     else:
         db_url = db_driver + '://' + db_user + ':' + db_password + '@' + db_host + ':' + db_port + '/' + db_name
 

@@ -7,15 +7,16 @@ services:
     mem_limit: 400m
     environment:
       ENVIRONMENT: ${ENVIRONMENT}
+      FRONTEND_PORT: ${FRONTEND_PORT}
       FLASK_DEBUG: ${FLASK_DEBUG}
       DB_DRIVER:  ${DB_DRIVER}
       DB_NAME:  ${DB_NAME}
       DB_DEBUG:  ${DB_DEBUG}
-      MQ_HOST: rabbitmq.planblick.svc
-      MQ_USERNAME: guest
-      MQ_PASSWORD: guest
-      MQ_PORT: 5672
-      MQ_VHOST: /
+      MQ_HOST: ${MQ_HOST}
+      MQ_USERNAME: ${MQ_USERNAME}
+      MQ_PASSWORD: ${MQ_PASSWORD}
+      MQ_PORT: ${MQ_PORT}
+      MQ_VHOST: ${MQ_VHOST}
       SMTP_HOST: ${SMTP_HOST}
       SMTP_PORT: ${SMTP_PORT}
       SMTP_LOGIN: ${SMTP_LOGIN}
