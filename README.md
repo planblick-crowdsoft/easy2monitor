@@ -13,7 +13,7 @@ Just run `docker-compose up`. Once the project was built and runs, visit
 
 ### Directly from linux bash (not fully tested yet)
 Make sure you have python as well as needed python packages installed (`pip3 install -r requirements.txt`)
-`cd /src` and run `./runAppManually.sh` or `./runApp.bat` if you are on Windows.
+`cd /src` and run `./runAppManually.sh`
 Be aware that you'll need to run an rabbitmq server on your own and configure the app accordingly.
 
 ### Directly from windows cmd
