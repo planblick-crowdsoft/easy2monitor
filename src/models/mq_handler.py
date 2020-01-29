@@ -16,8 +16,8 @@ def msg_handler(ch, method=None, properties=None, body=None):
         if method.routing_key == "http_check_recovered":
             subject = f"HTTP Check RECOVERED for {payload.get('check_name')}"
 
+
         if os.getenv("SEND_SMS") == "1":
-            print("Sending sms")
             # Create an SNS client
             client = boto3.client(
                 "sns",
@@ -26,11 +26,23 @@ def msg_handler(ch, method=None, properties=None, body=None):
                 aws_secret_access_key=os.getenv("AWS_SECRET_KEY")
             )
 
+            # Create the topic if it doesn't exist (this is idempotent)
+            topic = client.create_topic(Name="notifications")
+            topic_arn = topic['TopicArn']  # get its Amazon Resource Name
+
+            # Add SMS Subscribers
             for number in json.loads(os.getenv("SMS_RECIPIENTS")):
-                client.publish(
-                    PhoneNumber=number,
-                    Message=subject
+                print("Sending sms to", number)
+                client.subscribe(
+                    TopicArn=topic_arn,
+                    Protocol='sms',
+                    Endpoint=number  # <-- number who'll receive an SMS message.
                 )
+
+            # Publish a message.
+            client.publish(Message=subject, TopicArn=topic_arn)
+
+
 
         if os.getenv("SEND_MAIL") == "1":
             s = smtplib.SMTP(host=os.getenv("SMTP_HOST"), port=os.getenv("SMTP_PORT"))
@@ -51,4 +63,5 @@ def msg_handler(ch, method=None, properties=None, body=None):
 
         ch.basic_ack(method.delivery_tag)
     except Exception as e:
+        print(e)
         ch.basic_nack(method.delivery_tag)
