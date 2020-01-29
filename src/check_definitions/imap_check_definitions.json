@@ -1,0 +1,7 @@
+[
+  {
+    "name": "My IMAP-Server",
+    "host": "imap.example.com",
+    "port": 143
+  }
+]

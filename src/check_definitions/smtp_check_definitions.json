@@ -1,0 +1,7 @@
+[
+  {
+    "name": "My SMTP Server",
+    "host": "smtp.example.com",
+    "port": 25
+  }
+]
