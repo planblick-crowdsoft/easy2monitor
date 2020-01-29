@@ -7,5 +7,12 @@
       204
     ],
     "reply_text_contains": "world"
+  },
+  {
+    "name": "Random Status Test Endpoint",
+    "url": "http://localhost:8000/api/test",
+    "valid_status": [
+      200
+    ]
   }
 ]

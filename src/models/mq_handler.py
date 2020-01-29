@@ -3,7 +3,7 @@ import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import json
-
+import boto3
 
 def msg_handler(ch, method=None, properties=None, body=None):
     try:
@@ -15,6 +15,22 @@ def msg_handler(ch, method=None, properties=None, body=None):
 
         if method.routing_key == "http_check_recovered":
             subject = f"HTTP Check RECOVERED for {payload.get('check_name')}"
+
+        if os.getenv("SEND_SMS") == "1":
+            print("Sending sms")
+            # Create an SNS client
+            client = boto3.client(
+                "sns",
+                region_name=os.getenv("AWS_REGION"),
+                aws_access_key_id=os.getenv("AWS_ACCESS_KEY"),
+                aws_secret_access_key=os.getenv("AWS_SECRET_KEY")
+            )
+
+            for number in json.loads(os.getenv("SMS_RECIPIENTS")):
+                client.publish(
+                    PhoneNumber=number,
+                    Message=subject
+                )
 
         if os.getenv("SEND_MAIL") == "1":
             s = smtplib.SMTP(host=os.getenv("SMTP_HOST"), port=os.getenv("SMTP_PORT"))

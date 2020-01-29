@@ -24,6 +24,11 @@ services:
       MAIL_SENDER: ${MAIL_SENDER}
       MAIL_RECIPIENT: ${MAIL_RECIPIENT}
       SEND_MAIL: ${SEND_MAIL}
+      SEND_SMS: ${SEND_SMS}
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+      AWS_REGION: ${AWS_REGION}
+      SMS_RECIPIENTS: ${SMS_RECIPIENTS}
     stdin_open: true
     tty: true
     ports:
