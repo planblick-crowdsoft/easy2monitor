@@ -1,5 +1,5 @@
 # Easy2Monitor
-![alt Easy2Monitor Screenshot](https://www.crowdsoft.net/cdn/images/e2m_screenshot.png)
+![alt Easy2Monitor Screenshot](https://crowdsoft.net/cdn/images/e2m_screenshot.png)
 
 Easy2Monitor is a small tool to regularly check http, smtp and imap connections for availability.
 It's meant to be simply and easy to configure as well as easy to use. 
